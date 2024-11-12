@@ -76,9 +76,6 @@ def main():
     valid_set = M5_Dataset(data_path, Twin=[config.input_days,config.input_days], Tpred=config.output_days*config.regressive_rounds, is_inference=True)
     valid_loader = DataLoader(valid_set, batch_size=1, shuffle=False, num_workers=config.CPU_workers)
 
-    # display_set = LDTAU_FE_dataset(data_path, random.sample(dataset_filedict['valid'], config.imgrid_num), config, istest=False, random_pick=True)
-    # display_loader = DataLoader(display_set, batch_size=config.batch_size, shuffle=False, num_workers=config.CPU_workers)
-
     # Setup----
         # define model, criterion, optimizer, lr scheduler
     print("\n*\n*\n----START TRAINING----\n")
@@ -101,8 +98,8 @@ def main():
         print(f"Epoch:[{epoch}/{config.n_epochs}]")
 
         # Training phase
-        # loss = train(train_loader, model, criterion, optimizer, lr_scheduler, config.device, eta_L=eta[epoch-1].item())
-        # loss_record["train"].append( loss / len(train_loader.dataset) )
+        loss = train(train_loader, model, criterion, optimizer, lr_scheduler, config.device, eta_L=eta[epoch-1].item())
+        loss_record["train"].append( loss / len(train_loader.dataset) )
 
         # Validation phase
         loss = inference(valid_loader, model, criterion, config.device, num_round=4, display_text="  Validation")

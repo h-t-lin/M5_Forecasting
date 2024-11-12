@@ -7,7 +7,7 @@ import seaborn
 try: import Utils.Assistant_func.SnL as SnL
 except: import Assistant_func.SnL as SnL
 
-def plot_error_heatmap(gt, pred):
+def plot_error_heatmap(gt, pred, save_path):
     """
     Plot a heatmap to visualize the prediction error per store and product.
     
@@ -24,29 +24,31 @@ def plot_error_heatmap(gt, pred):
     rmse = np.clip(rmse, 0.0, 10.0)
 
     # 使用seaborn繪製誤差熱力圖
-    plt.figure(figsize=(12, 8))
-    seaborn.heatmap(rmse, cmap="YlOrRd", cbar_kws={'label': 'Mean Squared Error'}, xticklabels=100, yticklabels=range(1, 11))
+    fig = plt.figure(figsize=(16, 8))
+    seaborn.heatmap(rmse, cmap="YlOrRd", cbar_kws={'label': 'Root Mean Squared Error'}, xticklabels=100, yticklabels=range(1, 11))
     
     # 加入標籤和標題
     plt.xlabel("Product ID")
     plt.ylabel("Store ID")
-    plt.title("Prediction Error Heatmap (Mean Squared Error) for Each Store and Product")
-    plt.show()
+    plt.title("Prediction Error Heatmap (RMSE)")
+    fig.savefig(save_path)
+    plt.close(fig)
 
-def plot_prediction_curve(gt, pred, starting_day):
+def plot_prediction_curve(gt, pred, starting_day, title="", save_path=""):
     gt, pred = np.asarray(gt), np.asarray(pred)
     assert gt.shape == pred.shape
     days = np.arange(starting_day, starting_day + gt.shape[0])
 
-    plt.figure(figsize=(10, 5))
+    fig = plt.figure(figsize=(10, 5))
     plt.plot(days, gt, color='green', linestyle='-', label='Ground Truth')
     plt.plot(days, pred, color='orange', linestyle='-', label='Prediction')
     
     plt.xlabel("days")
-    plt.ylabel("selling")
+    plt.ylabel("sales volume")
     plt.legend()
-    plt.title("M5 Forcasting")
-    plt.show()
+    plt.title(title)
+    fig.savefig(save_path)
+    plt.close(fig)
     
 
 def plot_loss_curve(loss_record:dict, epoch, result_path):

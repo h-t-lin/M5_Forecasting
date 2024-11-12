@@ -66,9 +66,13 @@ def main():
     criterion = loss_settings(loss_type="MSE")
     print(f"  Model was saved at epoch of {checkpoint['epoch']+1}\n")
 
+    fig_dir = os.path.join(path['result_path'], 'figures')
+    os.makedirs(fig_dir, exist_ok=True)
+
     num_round = 4
     model_best.eval()
     Tpred = config.output_days
+    total_loss = 0.0
     with torch.no_grad():
         PRED = np.empty((10, 28, 3049), dtype=np.float32)
         GT = np.empty((10, 28, 3049), dtype=np.float32)
@@ -85,12 +89,19 @@ def main():
             pred = data[:, -num_round*Tpred:, :]
             pred = pred.round_()
             loss = criterion(pred, gt).detach().item()
+            total_loss += loss
             PRED[idx, ...] = pred.detach().cpu().numpy()[0,...]
             GT[idx, ...] = gt.detach().cpu().numpy()[0,...]
             
-            plot_prediction_curve(gt.detach().cpu().numpy()[0,:,202], pred.detach().cpu().numpy()[0,:,202], 1913)
+            item_id = 2973
+            plot_prediction_curve(gt.detach().cpu().numpy()[0,:,item_id], pred.detach().cpu().numpy()[0,:,item_id], 1913, title=f"Item{item_id}_{test_set.store_dir[idx]}", save_path=os.path.join(fig_dir, f"Item{item_id}_{test_set.store_dir[idx]}.png"))
+            # item_id = 1400
+            # plot_prediction_curve(gt.detach().cpu().numpy()[0,:,item_id], pred.detach().cpu().numpy()[0,:,item_id], 1913, title=f"Item{item_id}_{test_set.store_dir[idx]}", save_path=os.path.join(fig_dir, f"Item{item_id}_{test_set.store_dir[idx]}.png"))
+            # item_id = 2600
+            # plot_prediction_curve(gt.detach().cpu().numpy()[0,:,item_id], pred.detach().cpu().numpy()[0,:,item_id], 1913, title=f"Item{item_id}_{test_set.store_dir[idx]}", save_path=os.path.join(fig_dir, f"Item{item_id}_{test_set.store_dir[idx]}.png"))
         
-        plot_error_heatmap(GT, PRED)
+        print(f"Final RMSE: {np.sqrt(total_loss / len(test_loader.dataset))}")
+        plot_error_heatmap(GT, PRED, save_path=os.path.join(fig_dir, f"Heatmap.png"))
             
     print(f"*\n*\n----FINISHED----\n")
 
