@@ -1,0 +1,36 @@
+
+trainID: 11
+device: cuda:0
+seed: 420
+
+# data processing config
+dataset:
+  name: M5
+  input_days: 14
+  output_days: 7
+  regressive_rounds: 4
+  CVfold:
+  CPU_workers: 0
+
+# training config
+training:
+  n_epochs: 30        # Number of epochs.
+  batch_size: 16       # Size of one batch.
+  learning_rate: 1e-4  # Learning rate.
+  loss_type: L2    # "MSE", "L2", "MAE", "L1", "BCE", "CE", "CrossEntropy"; "L1+L2", "MW-SSIM", "DSSIM", "DSSIM_L1_L2_Mix"
+  optim_type: AdamW    # Optimizer options: "SGD", "Adam", "AdamW"
+  scheduler: Cosine    # Scheduler options: "None", "Step", "Cosine", "Cyclic1", "Cyclic2", "Cyclic3", "MultiStep", "OneCycle"
+  early_stop: 30       # If model has not improved for this many epochs, stop training.
+
+# loss config
+loss:
+  alpha: 0.5
+  beta: 10
+
+# model config
+model:
+  dropout_rate: 0.0
+  transformer_dim: 256
+  n_heads: 8
+  enc_layers: 3
+  dec_layers: 3

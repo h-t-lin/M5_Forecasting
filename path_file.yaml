@@ -1,0 +1,8 @@
+
+root_path: c:\Users\htlin\Desktop\SideProj\M5Forcasting
+
+# ----dataset/training----
+data_path: c:\Users\htlin\Desktop\SideProj\M5Forcasting\m5-dataset_v1    # Location of your image sets.
+model_path: c:\Users\htlin\Desktop\SideProj\M5Forcasting\model_ckp\M5_2024_model-V1-x.pth    # Your model will be saved here with this name.
+result_path: c:\Users\htlin\Desktop\SideProj\M5Forcasting\results\M5_2024_result-V1-x    # Outputted image will be saved here.
+training_cfg: .training_cfg.yaml
